@@ -1,0 +1,39 @@
+import java.util.Stack;
+
+class DelimiterMatching {
+    public static void main(String[] args) {
+        System.out.println(checkDelimiters("c[d]")); // true
+        System.out.println(checkDelimiters("a{b[c]d}e")); // true
+        System.out.println(checkDelimiters("a{b(c]d}e")); // false
+        System.out.println(checkDelimiters("(a[b{c}d]e)")); // true
+        System.out.println(checkDelimiters("(a[b{c}d]e}")); // false
+    }
+
+    public static boolean checkDelimiters(String text) {
+        Stack<Character> stack = new Stack<Character>();
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push(c);
+            } else if (c == ')' || c == ']' || c == '}') {
+                if (stack.isEmpty()) {
+                    return false;
+                } else {
+                    char correspondingOpeningDelimiter;
+                    switch (c) {
+                        case ')': correspondingOpeningDelimiter = '('; break;
+                        case ']': correspondingOpeningDelimiter = '['; break;
+                        case '}': correspondingOpeningDelimiter = '{'; break;
+                        default: return false;
+                    }
+                    if (stack.pop() != correspondingOpeningDelimiter) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+}
