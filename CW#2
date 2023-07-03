@@ -1,39 +1,56 @@
+import java.util.Scanner;
 import java.util.Stack;
 
-class DelimiterMatching {
+public class Main {
     public static void main(String[] args) {
-        System.out.println(checkDelimiters("c[d]")); // true
-        System.out.println(checkDelimiters("a{b[c]d}e")); // true
-        System.out.println(checkDelimiters("a{b(c]d}e")); // false
-        System.out.println(checkDelimiters("(a[b{c}d]e)")); // true
-        System.out.println(checkDelimiters("(a[b{c}d]e}")); // false
+        Scanner scanner = new Scanner(System.in);
+        String text;
+        do {
+            System.out.print("Enter a line of text (or type 'exit' to quit): ");
+            text = scanner.nextLine();
+            if (text.equalsIgnoreCase("exit")) {
+                break;
+            }
+            // Check if delimiters in the input text are correctly matched
+            boolean result = checkDelimiters(text);
+            // Output whether delimiters match or not
+            if (result) {
+                System.out.println("Delimiters match.");
+            } else {
+                System.out.println("Delimiters do not match.");
+            }
+        } while (!text.equalsIgnoreCase("exit"));
+        System.out.println("Exiting the program.");
     }
 
+    // Method to check if delimiters in the given text are correctly matched
     public static boolean checkDelimiters(String text) {
-        Stack<Character> stack = new Stack<Character>();
-
+        Stack<Character> stack = new Stack<>();
+        // Iterate through each character in the input text
         for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-
-            if (c == '(' || c == '[' || c == '{') {
-                stack.push(c);
-            } else if (c == ')' || c == ']' || c == '}') {
+            char ch = text.charAt(i);
+            // If an opening delimiter is found, push it onto the stack
+            if (ch == '(' || ch == '[' || ch == '{') {
+                stack.push(ch);
+            } else if (ch == ')' || ch == ']' || ch == '}') {
+                // If a closing delimiter is found
+                // If stack is empty, there is no corresponding opening delimiter, return false
                 if (stack.isEmpty()) {
                     return false;
-                } else {
-                    char correspondingOpeningDelimiter;
-                    switch (c) {
-                        case ')': correspondingOpeningDelimiter = '('; break;
-                        case ']': correspondingOpeningDelimiter = '['; break;
-                        case '}': correspondingOpeningDelimiter = '{'; break;
-                        default: return false;
-                    }
-                    if (stack.pop() != correspondingOpeningDelimiter) {
-                        return false;
-                    }
+                }
+                // Pop the top element from the stack and check if it matches the current closing delimiter
+                char top = stack.pop();
+                if (!isMatching(top, ch)) {
+                    // If they don't match, return false
+                    return false;
                 }
             }
         }
         return stack.isEmpty();
+    }
+
+    // Helper method to check if an opening delimiter matches with a closing delimiter
+    public static boolean isMatching(char opening, char closing) {
+        return (opening == '(' && closing == ')') || (opening == '[' && closing == ']') || (opening == '{' && closing == '}');
     }
 }
